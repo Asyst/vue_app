@@ -3,7 +3,7 @@
     <header id="home">
         <div id="home-slider" class="carousel slide carousel-fade" data-ride="carousel">
             <div class="carousel-inner">
-                <div class="item active" style="background-image: url(../assets/images/slider/bg-1.jpg)">
+                <div class="item active" style="background-image: url(./assets/images/slider/bg-1.jpg)">
                     <div class="caption">
                     <h1 class="animated fadeInLeftBig">{{ title }}</h1>
                     <p class="animated fadeInRightBig">{{ description }}</p>

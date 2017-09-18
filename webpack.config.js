@@ -1,12 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     context: path.resolve( __dirname, './' ),
-    entry: './js/src/app.js',
+    entry: {
+        app: './js/src/app.js'
+    },
     output: {
-        path: path.resolve(__dirname, './build'),
-        filename: '[name].js'
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'build')
     },
     module: {
         loaders: [
@@ -26,6 +30,9 @@ module.exports = {
             'process.env': {
                 NODE_ENV: '"development"'
             }
+        }),
+        new HTMLWebpackPlugin({
+            template: './index.html'
         })
     ],
     resolve: {
@@ -34,6 +41,7 @@ module.exports = {
         }
     },
     devServer: {
+        contentBase: path.join(__dirname, "build"),
         historyApiFallback: true,
         noInfo: true
     }
