@@ -50,6 +50,7 @@ import axios from 'axios';
 import { mapMutations, mapState, mapActions } from 'vuex';
 import portfolioItem from '../components/portfolioItem.vue';
 import * as types from '../store/mutation-types'
+import posts from '../api/posts'
 
 export default {
     data() {
@@ -84,47 +85,46 @@ export default {
         // this.getIdx(types.IDX);
         // this.getCovers(types.COVERS);
         // this.getCaptions(types.CAPTIONS);
-        
-        const url = 'http://makeyourholiday.local/wp-json/wp/v2/posts';
 
-        axios.get( url )
-            .then(( response ) => {
-                return response.data;
-            })
-            .then(( data ) => {
-                const isGallery = ( item ) => {
-                    return item.format === 'gallery' && item; 
+        const store = this.$store;
+
+        posts.getGalleriesId()
+            .then(( idx ) => {
+                if ( process.env.NODE_ENV === 'development' ) {
+                    console.log( 'posts api -> ', idx );
                 }
 
-                const isCover = ( item ) => {
-                    return item.title === 'cover';
-                }
-    
-                const getGalleries = _.compose( _.map( _.prop('custom_fields') ), _.filter( isGallery ) );
-                const galleries = getGalleries( data );
-
-                const getCoversUrl =  _.map( _.compose( _.map( _.prop('sizes') ), _.filter( isCover ) ) );
-                const getCoversCaption =  _.map( _.compose( _.map( _.prop('caption') ), _.filter( isCover ) ) );
-
-                const getPostsId = _.compose( _.map( _.prop('id') ), _.filter( isGallery ) );
-
-                this.getIdx({
+                store.commit({
                     type: types.IDX,
-                    idx: getPostsId( data )
+                    idx: idx
                 });
+            })
 
-                this.getCaptions({
+        posts.getCoversCaption()
+            .then(( captions ) => {
+                if ( process.env.NODE_ENV === 'development' ) {
+                    console.log( 'posts api -> ', captions );
+                }
+
+                store.commit({
                     type: types.CAPTIONS,
-                    captions: getCoversCaption( galleries )
+                    captions: captions
                 });
+            })
 
-                this.getCovers({
+        posts.getCoversUrl()
+            .then(( urls ) => {
+                if ( process.env.NODE_ENV === 'development' ) {
+                    console.log( 'urls api -> ', urls );
+                }
+                
+                store.commit({
                     type: types.COVERS,
-                    covers: getCoversUrl( galleries )
+                    covers: urls
                 });
+            })
 
-                console.log( 'home mounted: -> ', this.captions );
-            });
+        console.log('store -> ', store);
     }
 }
 </script>

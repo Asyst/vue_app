@@ -27,15 +27,16 @@ const getGalleries = _.compose( _.map( _.prop('custom_fields') ), _.filter( isGa
 export default new Vuex.Store({
     state: {
         count: 0,
+        title: '',
         idx: [],
         captions: [],
         covers: [],
-        items: []
+        photos: []
     },
     mutations: {
         [types.IDX] ( state, payload ) {
             state.idx = { ...state.idx, idx: payload.idx }
-            console.log('mutations -> ', state.idx);
+            console.log('process.env -> ', process.env);
         },
         [types.COVERS] ( state, payload ) {
             state.covers = { ...state.covers, covers: payload.covers }
@@ -45,10 +46,18 @@ export default new Vuex.Store({
             state.captions = { ...state.captions, captions: payload.captions }
             console.log('mutations -> ', payload.captions);
         },
-        setItems( state, payload ) {
-            state.items = { ...payload.items }
+        [types.GET_PHOTOS] ( state, payload ) {
+            state.photos = { ...state.photos, photos: payload.photos }
+        },
+        [types.TITLE] ( state, payload ) {
+            state.title = { ...state.title, title: payload.title }
         }
     },
+    getters: {
+        showTitle (state, getters) {
+            return state.title;
+        }
+    }
     // actions: {
     //     getIdx ( { commit } ) {
     //         axios.get( url )
